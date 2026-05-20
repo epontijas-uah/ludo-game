@@ -1,0 +1,8 @@
+{
+  "name": "LudoGame",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite",
+  "id": "71960b04"
+}
