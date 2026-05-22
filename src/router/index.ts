@@ -3,6 +3,8 @@ import LoginView from '@/views/LoginView.vue';
 import CatalogoView from '@/views/CatalogoView.vue';
 import DashboardView from '@/views/DashboardView.vue';
 import BibliotecaView from '@/views/BibliotecaView.vue';
+import ContactoView from '@/views/ContactoView.vue';
+import DetalleView from '@/views/DetalleView.vue';
 
 const routes = [
   {
@@ -25,9 +27,19 @@ const routes = [
     component: DashboardView
   },
   {
+    path: '/contacto',
+    name: 'Contacto',
+    component: ContactoView
+  },
+  {
     path: '/biblioteca',
     name: 'Biblioteca',
     component: BibliotecaView
+  },
+  {
+    path: '/juego/:id',
+    name: 'juego-detalle',
+    component: DetalleView
   }
 ];
 

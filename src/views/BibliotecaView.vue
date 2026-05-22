@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-darkbg text-white font-sans min-h-screen selection:bg-brandgreen selection:text-black">
+  <div class="bg-darkbg text-white font-sans selection:bg-brandgreen selection:text-black">
     
     <HeaderComponent :is-admin="false">
       <template #search>
@@ -46,46 +46,13 @@
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-        <div 
+        <GameStatusCardComponent 
           v-for="game in filteredGames" 
-          :key="game.id" 
-          class="bg-darkcard rounded-xl border border-darkborder overflow-hidden relative shadow-lg group hover:border-gray-500 transition-all duration-300"
-        >
-          <button 
-            @click="toggleFavorite(game.id)"
-            class="absolute top-3 right-3 w-8 h-8 rounded-full bg-darkbg/80 backdrop-blur border border-darkborder flex items-center justify-center shadow-lg z-10 transition-colors"
-            :class="game.isFavorite ? 'text-goldaccent' : 'text-gray-400 hover:text-goldaccent'"
-          >
-            {{ game.isFavorite ? '★' : '☆' }}
-          </button>
-
-          <div class="h-64 bg-gray-700 relative overflow-hidden">
-            <img 
-              :src="game.image" 
-              :alt="game.title" 
-              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            >
-          </div>
-
-          <div class="p-4">
-            <h3 class="font-bold text-sm mb-3 truncate" :title="game.title">
-              {{ game.title }}
-            </h3>
-            
-            <div class="relative">
-              <select 
-                v-model="game.status"
-                class="w-full font-bold text-xs rounded-lg py-2.5 px-3 appearance-none cursor-pointer text-center transition-colors focus:outline-none"
-                :class="getStatusClasses(game.status)"
-              >
-                <option value="En curso">En curso</option>
-                <option value="Pendiente">Pendiente</option>
-                <option value="Finalizado">Terminado</option>
-                <option value="Jugado regularmente">Jugado regularmente</option>
-              </select>
-            </div>
-          </div>
-        </div>
+          :key="game.id"
+          :game="game"
+          @toggle-favorite="toggleFavorite"
+          @update-status="updateGameStatus"
+        />
       </div>
 
       <div v-if="filteredGames.length === 0" class="text-center py-12 text-gray-500">
@@ -96,14 +63,13 @@
 </template>
 
 <script setup>
-import HeaderComponent from '@/components/HeaderComponent.vue'
 import { ref, computed } from 'vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
+import GameStatusCardComponent from '@/components/GameStatusCardComponent.vue'
 
-// State variables
 const searchQuery = ref('')
 const selectedFilter = ref('Todos')
 
-// Mock Data structure based on your current catalog layout
 const games = ref([
   { id: 1, title: 'The Legend of Zelda', status: 'En curso', isFavorite: true, image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=400' },
   { id: 2, title: 'Elden Ring', status: 'Pendiente', isFavorite: false, image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=400' },
@@ -119,7 +85,6 @@ const games = ref([
   { id: 12, title: 'Cyberpunk 2077', status: 'Jugado regularmente', isFavorite: true, image: 'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0d?auto=format&fit=crop&q=80&w=400' }
 ])
 
-// Actions
 const toggleFavorite = (id) => {
   const game = games.value.find(g => g.id === id)
   if (game) {
@@ -127,23 +92,14 @@ const toggleFavorite = (id) => {
   }
 }
 
-// Style dictionary mapping for card selectors
-const getStatusClasses = (status) => {
-  switch (status) {
-    case 'En curso':
-      return 'bg-brandgreen text-black'
-    case 'Pendiente':
-      return 'bg-darkbg border border-darkborder text-gray-300'
-    case 'Finalizado':
-      return 'bg-coral text-white'
-    case 'Jugado regularmente':
-      return 'bg-goldaccent text-white'
-    default:
-      return 'bg-gray-600 text-white'
+// Nueva función encargada de actualizar de forma segura el estado desde el evento del hijo
+const updateGameStatus = (id, newStatus) => {
+  const game = games.value.find(g => g.id === id)
+  if (game) {
+    game.status = newStatus
   }
 }
 
-// Search and Dropdown filter logic pipeline
 const filteredGames = computed(() => {
   return games.value.filter(game => {
     const matchesSearch = game.title.toLowerCase().includes(searchQuery.value.toLowerCase())

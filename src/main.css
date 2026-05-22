@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-darkbg: #333333;
-  --color-brandgreen: #00E676;
-  --color-goldaccent: #B8860B;
-  --color-darkcard: #222222;
-  --color-darkborder: #4a4a4a;
+  --color-darkbg: #2d2d2d;       /* Gris carbón medio del fondo global */
+  --color-darkcard: #222222;     /* Gris oscuro casi negro de la tarjeta */
+  --color-darkborder: #333333;   /* Borde sutil para la tarjeta e inputs */
+  --color-brandgreen: #00E676;   /* Verde vibrante para botones y altas */
+  --color-goldaccent: #E5A93C;   /* Dorado/ámbar cálido para la recuperación */
   --color-coral: #FF6F61;
 }

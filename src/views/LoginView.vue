@@ -1,60 +1,104 @@
 <template>
   <ion-page>
-    <ion-content :fullscreen="true">
-      <div class="login-container">
+    <ion-content :fullscreen="true" class="ion-content-transparent">
+      
+      <div class="min-h-full bg-darkbg text-white font-sans flex flex-col items-center justify-center p-6 relative selection:bg-brandgreen selection:text-black">
         
-        <LangSelector v-model="language" />
-
-        <div class="header-container">
-          <div class="logo-box">
-            <img src="/Logotipo_Blanco.png" alt="LudoGame Logo" class="logo-img">
+        <div class="absolute top-4 right-4">
+          <div class="relative bg-darkcard border border-darkborder rounded-md">
+            <ion-select 
+              v-model="selectedLanguage"
+              interface="popover"
+              toggle-icon="chevron-down-outline"
+              class="text-[11px] text-gray-300 font-medium custom-lang-select"
+            >
+              <ion-select-option value="es">ES</ion-select-option>
+              <ion-select-option value="en">EN</ion-select-option>
+            </ion-select>
           </div>
-          <h1 class="main-title">LudoGame</h1>
-          <p class="gray-text">Tu biblioteca de videojuegos</p>
         </div>
 
-        <div class="login-card">
-          <h2 class="card-title">Iniciar sesión</h2>
-          <p class="gray-text">Ingresa tus credenciales para acceder</p>
+        <div class="mb-5 text-center flex flex-col items-center">
+          <img 
+            src="/Logotipo_Blanco.png" 
+            alt="LudoGame Logo" 
+            class="w-12 h-12 object-contain mb-2 logo-img"
+          >
+          <h1 class="text-2xl font-bold text-white tracking-tight">LudoGame</h1>
+          <p class="text-gray-400 mt-1 text-xs">Tu biblioteca de videojuegos</p>
+        </div>
+
+        <div class="bg-darkcard border border-darkborder p-6 rounded-xl w-full max-w-[360px] shadow-2xl">
+          <h2 class="text-xl font-bold text-white mb-1 text-center">Iniciar sesión</h2>
+          <p class="text-gray-400 text-center text-xs mb-5">Ingresa tus credenciales para acceder</p>
           
-          <form @submit.prevent="handleLogin" class="form-spacing">
+          <form @submit.prevent="handleLogin" class="space-y-4">
             <div>
-              <label class="input-label">Correo electrónico</label>
-              <input type="email" v-model="email" placeholder="usuario@correo.com" class="form-input">
+              <label class="block text-xs font-medium text-gray-300 mb-1">Correo electrónico</label>
+              <div class="w-full bg-darkbg border border-darkborder rounded-md px-3 transition-colors focus-within:border-brandgreen">
+                <ion-input 
+                  v-model="email"
+                  type="email" 
+                  required
+                  placeholder="ejemplo@correo.com" 
+                  class="custom-ion-input text-white"
+                ></ion-input>
+              </div>
             </div>
             
             <div>
-              <label class="input-label">Contraseña</label>
-              <input type="password" v-model="password" placeholder="••••••••" class="form-input">
+              <label class="block text-xs font-medium text-gray-300 mb-1">Contraseña</label>
+              <div class="w-full bg-darkbg border border-darkborder rounded-md px-3 transition-colors focus-within:border-brandgreen">
+                <ion-input 
+                  v-model="password"
+                  type="password" 
+                  required
+                  placeholder="••••••••" 
+                  class="custom-ion-input text-white"
+                ></ion-input>
+              </div>
             </div>
-
-            <div class="forgot-container">
-              <a href="#" class="forgot-link">Recuperar contraseña</a>
+            
+            <div class="flex justify-end">
+              <a href="#" class="text-xs text-goldaccent hover:opacity-80 transition-opacity">
+                Recuperar contraseña
+              </a>
             </div>
-
-            <button type="submit" class="submit-btn">
+            
+            <ion-button 
+              type="submit" 
+              expand="block"
+              class="main-submit-btn font-bold mt-1"
+            >
               Iniciar sesión
-            </button>
+            </ion-button>
           </form>
 
-          <div class="divider-container">
-            <div class="divider-line"></div>
-            <span class="divider-text">O continúa con</span>
-            <div class="divider-line"></div>
+          <div class="mt-6 flex items-center justify-center gap-3">
+            <div class="h-px bg-darkborder flex-1"></div>
+            <span class="text-[10px] text-gray-500 font-bold tracking-wider">O CONTINÚA CON</span>
+            <div class="h-px bg-darkborder flex-1"></div>
           </div>
 
-          <div class="social-grid">
-            <button @click="loginWithProvider('Google')" class="social-btn">Google</button>
-            <button @click="loginWithProvider('GitHub')" class="social-btn">GitHub</button>
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <ion-button 
+              @click="loginWithProvider('Google')"
+              class="social-provider-btn"
+            >
+              Google
+            </ion-button>
+            <ion-button 
+              @click="loginWithProvider('GitHub')"
+              class="social-provider-btn"
+            >
+              GitHub
+            </ion-button>
           </div>
 
-          <div class="register-div">
-            <p>
-              ¿No tienes una cuenta? 
-              <a href="#" class="register-btn">Regístrate</a>
-            </p>
-          </div>
-
+          <p class="text-center text-xs text-gray-400 mt-6">
+            ¿No tienes una cuenta? 
+            <a href="#" class="text-brandgreen font-medium hover:underline ml-1">Regístrate</a>
+          </p>
         </div>
 
       </div>
@@ -63,224 +107,78 @@
 </template>
 
 <script setup>
-import { IonPage, IonContent } from '@ionic/vue';
-import { ref } from 'vue';
-import LangSelector from '@/components/LangSelector.vue';
+import { ref } from 'vue'
+import { 
+  IonPage, 
+  IonContent, 
+  IonSelect, 
+  IonSelectOption, 
+  IonInput, 
+  IonButton 
+} from '@ionic/vue'
 
-const language = ref('es');
-const email = ref('');
-const password = ref('');
+const email = ref('')
+const password = ref('')
+const selectedLanguage = ref('es')
 
 const handleLogin = () => {
-  console.log('Login:', email.value, password.value);
-};
+  if (!email.value || !password.value) return
+  console.log('Iniciando sesión con:', { email: email.value, password: password.value })
+}
 
 const loginWithProvider = (provider) => {
-  console.log('Social:', provider);
-};
+  console.log(`Proveedor: ${provider}`)
+}
 </script>
 
 <style scoped>
-ion-content {
-  --background: #333333 !important;
+ion-content.ion-content-transparent {
+  --background: transparent;
 }
 
-.login-container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  position: relative;
-  background-color: #333333;
-  font-family: sans-serif;
-  gap: 1.5rem;
+.custom-ion-input {
+  --background: transparent;
+  --color: #ffffff;
+  --placeholder-color: #52525b;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --padding-start: 0px;
+  --padding-end: 0px;
+  font-size: 0.815rem;
+  height: 36px;
 }
 
-/* CABECERA - TITULO E ICONO ------------------- */
-.header-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+.custom-lang-select {
+  --color: #d1d5db;
+  --placeholder-color: #d1d5db;
+  padding-inline-start: 8px;
+  padding-inline-end: 4px;
+  height: 28px;
 }
 
-.logo-img {
-  height: 3.5rem;
-  object-fit: contain;
-}
-
-.main-title {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #ffffff;
-  margin-top: 1rem;
-}
-
-.gray-text{
-  color: #9ca3af;
-  margin: 0;
-  font-size: 14px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-}
-
-/* TARJETA LOGIN -------------------------- */
-.login-card {
-  background-color: #222222;
-  border: 1px solid #4a4a4a;
-  padding: 2rem 2rem;
-  border-radius: 0.75rem;
-  width: 100%;
-  max-width: 28rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-  position: relative;
-}
-
-.card-title {
-  font-size: 1.5rem;
+/* El botón hereda directamente la variable reactiva del tema */
+.main-submit-btn {
+  --background: var(--color-brandgreen);
+  --color: #000000;
+  --border-radius: 6px;
+  --box-shadow: none;
   font-weight: 700;
-  color: #ffffff;
-  margin-top: 0;
-  text-align: center;
+  text-transform: none;
+  font-size: 0.85rem;
+  height: 38px;
 }
 
-/* FORMULARIO */
-.form-spacing > * + * {
-  margin-top: 1.1rem;
+/* El fondo interno de los botones sociales hereda de tu tarjeta */
+.social-provider-btn {
+  --background: var(--color-darkbg);
+  --color: #d1d5db;
+  --border-color: var(--color-darkborder);
+  --border-style: solid;
+  --border-width: 1px;
+  --border-radius: 6px;
+  --box-shadow: none;
+  text-transform: none;
+  font-size: 0.8rem;
+  height: 34px;
 }
-
-.input-label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: bold;
-  color: #c5c5c5;
-  margin-bottom: 0.5rem;
-}
-
-.form-input {
-  width: 100%;
-  background-color: #333333;
-  border: 1px solid #4a4a4a;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  color: #ffffff;
-  font-size: 1rem;
-  outline: none;
-  box-sizing: border-box;
-  transition: border-color 0.2s;
-}
-
-.form-input:focus {
-  border-color: #00E676;
-}
-
-.form-input::placeholder {
-  color: #4b5563;
-}
-
-/* PW OLVIDADA */
-.forgot-container {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
-}
-
-.forgot-link {
-  font-size: 0.875rem;
-  color: #B8860B;
-  text-decoration: none;
-  transition: color 0.2s;
-  margin: 1rem 0;
-}
-
-.forgot-link:hover {
-  color: #facc15;
-}
-
-/* INICIAR SESION BOTON */
-.submit-btn {
-  width: 100%;
-  background-color: #00E676;
-  color: #000000;
-  font-weight: 700;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.2s;
-  margin-top: 0.5rem;
-}
-
-.submit-btn:hover {
-  background-color: #4ade80;
-}
-
-/* SEPARACION LOGIN */
-.divider-container {
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.divider-line {
-  height: 1px;
-  background-color: #4a4a4a;
-  flex: 1;
-}
-
-.divider-text {
-  font-size: 0.75rem;
-  color: #9ca3af;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-/* BOTONES REDES */
-.social-grid {
-  margin-top: 1.5rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem; /* espacio para que no quede pegado al texto absoluto */
-}
-
-.social-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: #333333;
-  border: 1px solid #4a4a4a;
-  padding: 0.625rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  color: #d1d5db;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.social-btn:hover {
-  background-color: #374151;
-}
-
-.register-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  font-size: 0.95rem;
-  color: #9ca3af;
-}
-
-.register-btn{
-  font-weight: bold;
-  text-decoration: none;
-  color: #00E676;
-}
-
 </style>
