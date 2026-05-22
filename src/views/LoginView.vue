@@ -3,15 +3,7 @@
     <ion-content :fullscreen="true">
       <div class="login-container">
         
-        <div class="lang-selector-container">
-          <div class="relative">
-            <select v-model="language" class="lang-select">
-              <option value="es">ES</option>
-              <option value="en">EN</option>
-            </select>
-            <span class="select-arrow">▼</span>
-          </div>
-        </div>
+        <LangSelector v-model="language" />
 
         <div class="header-container">
           <div class="logo-box">
@@ -73,6 +65,7 @@
 <script setup>
 import { IonPage, IonContent } from '@ionic/vue';
 import { ref } from 'vue';
+import LangSelector from '@/components/LangSelector.vue';
 
 const language = ref('es');
 const email = ref('');
@@ -103,39 +96,6 @@ ion-content {
   background-color: #333333;
   font-family: sans-serif;
   gap: 1.5rem;
-}
-
-/* SELECTOR DE IDIOMA ------------------- */
-.lang-selector-container {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-}
-
-.lang-select {
-  background-color: #222222;
-  border: 1px solid #4a4a4a;
-  border-radius: 0.5rem;
-  padding: 0.5rem 2rem 0.5rem 0.75rem;
-  font-size: 0.75rem;
-  color: #d1d5db;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.lang-select:focus {
-  border-color: #00E676;
-}
-
-.select-arrow {
-  position: absolute;
-  right: 0.75rem;
-  top: 0.65rem;
-  font-size: 10px;
-  color: #9ca3af;
-  pointer-events: none;
 }
 
 /* CABECERA - TITULO E ICONO ------------------- */
