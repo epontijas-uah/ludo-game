@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import LoginView from '@/views/LoginView.vue';
 import CatalogoView from '@/views/CatalogoView.vue';
 import DashboardView from '@/views/DashboardView.vue';
+import BibliotecaView from '@/views/BibliotecaView.vue';
 
 const routes = [
   {
@@ -22,6 +23,11 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardView
+  },
+  {
+    path: '/biblioteca',
+    name: 'Biblioteca',
+    component: BibliotecaView
   }
 ];
 

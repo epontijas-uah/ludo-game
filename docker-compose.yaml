@@ -1,0 +1,9 @@
+services:
+frontend:
+build:
+  context: ./src
+  dockerfile: Dockerfile
+  args:
+    - VITE_API_URL=http://localhost:8080
+ports:
+  - "8100:80"
