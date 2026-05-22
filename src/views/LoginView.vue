@@ -18,12 +18,12 @@
             <img src="/Logotipo_Blanco.png" alt="LudoGame Logo" class="logo-img">
           </div>
           <h1 class="main-title">LudoGame</h1>
-          <p class="text-gray-400 mt-1.5 text-sm font-medium">Tu biblioteca de videojuegos</p>
+          <p class="gray-text">Tu biblioteca de videojuegos</p>
         </div>
 
         <div class="login-card">
           <h2 class="card-title">Iniciar sesión</h2>
-          <p class="text-gray-400 text-center text-sm mb-10">Ingresa tus credenciales para acceder</p>
+          <p class="gray-text">Ingresa tus credenciales para acceder</p>
           
           <form @submit.prevent="handleLogin" class="form-spacing">
             <div>
@@ -56,10 +56,12 @@
             <button @click="loginWithProvider('GitHub')" class="social-btn">GitHub</button>
           </div>
 
-          <p class="text-center text-sm text-gray-400 mt-10">
-            ¿No tienes una cuenta? 
-            <a href="#" class="text-brandgreen font-bold hover:underline ml-1">Regístrate</a>
-          </p>
+          <div class="register-div">
+            <p>
+              ¿No tienes una cuenta? 
+              <a href="#" class="register-btn">Regístrate</a>
+            </p>
+          </div>
 
         </div>
 
@@ -86,7 +88,6 @@ const loginWithProvider = (provider) => {
 </script>
 
 <style scoped>
-/* Estilos directos garantizados */
 ion-content {
   --background: #333333 !important;
 }
@@ -101,8 +102,10 @@ ion-content {
   position: relative;
   background-color: #333333;
   font-family: sans-serif;
+  gap: 1.5rem;
 }
 
+/* SELECTOR DE IDIOMA ------------------- */
 .lang-selector-container {
   position: absolute;
   top: 1.5rem;
@@ -135,60 +138,64 @@ ion-content {
   pointer-events: none;
 }
 
+/* CABECERA - TITULO E ICONO ------------------- */
 .header-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
   text-align: center;
 }
 
-.logo-box {
-  margin-bottom: 0.75rem;
-}
-
 .logo-img {
-  width: 3rem;
-  height: 3rem;
+  height: 3.5rem;
   object-fit: contain;
 }
 
 .main-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
+  font-size: 2rem;
+  font-weight: bold;
   color: #ffffff;
+  margin-top: 1rem;
+}
+
+.gray-text{
+  color: #9ca3af;
   margin: 0;
-}
-
-.login-card {
-  background-color: #222222;
-  border: 1px solid #4a4a4a;
-  padding: 2rem;
-  border-radius: 0.75rem;
-  width: 100%;
-  max-width: 28rem;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #ffffff;
-  margin-top: 0;
+  font-size: 14px;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
+/* TARJETA LOGIN -------------------------- */
+.login-card {
+  background-color: #222222;
+  border: 1px solid #4a4a4a;
+  padding: 2rem 2rem;
+  border-radius: 0.75rem;
+  width: 100%;
+  max-width: 28rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-top: 0;
+  text-align: center;
+}
+
+/* FORMULARIO */
 .form-spacing > * + * {
-  margin-top: 1rem;
+  margin-top: 1.1rem;
 }
 
 .input-label {
   display: block;
   font-size: 0.875rem;
-  font-weight: 500;
-  color: #9ca3af;
+  font-weight: bold;
+  color: #c5c5c5;
   margin-bottom: 0.5rem;
 }
 
@@ -213,6 +220,7 @@ ion-content {
   color: #4b5563;
 }
 
+/* PW OLVIDADA */
 .forgot-container {
   display: flex;
   justify-content: flex-end;
@@ -224,12 +232,14 @@ ion-content {
   color: #B8860B;
   text-decoration: none;
   transition: color 0.2s;
+  margin: 1rem 0;
 }
 
 .forgot-link:hover {
   color: #facc15;
 }
 
+/* INICIAR SESION BOTON */
 .submit-btn {
   width: 100%;
   background-color: #00E676;
@@ -248,6 +258,7 @@ ion-content {
   background-color: #4ade80;
 }
 
+/* SEPARACION LOGIN */
 .divider-container {
   margin-top: 2rem;
   display: flex;
@@ -265,17 +276,17 @@ ion-content {
 .divider-text {
   font-size: 0.75rem;
   color: #9ca3af;
-  /* font-medium: 500; */
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
+/* BOTONES REDES */
 .social-grid {
   margin-top: 1.5rem;
   display: grid;
-  /* grid-cols: 1fr 1fr; */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  margin-bottom: 1rem; /* espacio para que no quede pegado al texto absoluto */
 }
 
 .social-btn {
@@ -296,4 +307,20 @@ ion-content {
 .social-btn:hover {
   background-color: #374151;
 }
+
+.register-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #9ca3af;
+}
+
+.register-btn{
+  font-weight: bold;
+  text-decoration: none;
+  color: #00E676;
+}
+
 </style>
