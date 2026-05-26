@@ -6,6 +6,7 @@ import BibliotecaView from '@/views/BibliotecaView.vue';
 import ContactoView from '@/views/ContactoView.vue';
 import DetalleView from '@/views/DetalleView.vue';
 import RegistroView from '@/views/RegistroView.vue';
+import RecuperarView from '@/views/RecuperarView.vue';
 
 const routes = [
   {
@@ -41,6 +42,11 @@ const routes = [
     path: '/registro',
     name: 'Registro',
     component: RegistroView
+  },
+  {
+    path: '/recuperar',
+    name: 'Recuperar',
+    component: RecuperarView
   },
   {
     path: '/juego/:id',
