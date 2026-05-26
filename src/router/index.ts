@@ -5,6 +5,7 @@ import DashboardView from '@/views/DashboardView.vue';
 import BibliotecaView from '@/views/BibliotecaView.vue';
 import ContactoView from '@/views/ContactoView.vue';
 import DetalleView from '@/views/DetalleView.vue';
+import RegistroView from '@/views/RegistroView.vue';
 
 const routes = [
   {
@@ -35,6 +36,11 @@ const routes = [
     path: '/biblioteca',
     name: 'Biblioteca',
     component: BibliotecaView
+  },
+  {
+    path: '/registro',
+    name: 'Registro',
+    component: RegistroView
   },
   {
     path: '/juego/:id',
