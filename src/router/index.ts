@@ -7,6 +7,7 @@ import ContactoView from '@/views/ContactoView.vue';
 import DetalleView from '@/views/DetalleView.vue';
 import RegistroView from '@/views/RegistroView.vue';
 import RecuperarView from '@/views/RecuperarView.vue';
+import PerfilView from '@/views/PerfilView.vue';
 
 const routes = [
   {
@@ -47,6 +48,11 @@ const routes = [
     path: '/recuperar',
     name: 'Recuperar',
     component: RecuperarView
+  },
+  {
+    path: '/perfil',
+    name: 'Perfil',
+    component: PerfilView
   },
   {
     path: '/juego/:id',
