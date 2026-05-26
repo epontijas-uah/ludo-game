@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
@@ -13,9 +14,11 @@ import '@ionic/vue/css/typography.css'
 
 import './main.css'
 
+const pinia = createPinia()
 const app = createApp(App)
   .use(IonicVue) // Instancia el contexto global de Ionic
   .use(router)
+  .use(pinia)
 
 // Es buena práctica esperar a que el router esté listo en Ionic antes de montar
 router.isReady().then(() => {

@@ -58,6 +58,11 @@
                 ></ion-input>
               </div>
             </div>
+
+            <!-- Mensaje de error del backend -->
+            <div v-if="errorMsg" class="text-xs text-red-400 bg-red-900/20 border border-red-500/30 rounded-md px-3 py-2">
+              {{ errorMsg }}
+            </div>
             
             <div class="flex justify-end">
               <a href="#" class="text-xs text-goldaccent hover:opacity-80 transition-opacity">
@@ -68,9 +73,10 @@
             <ion-button 
               type="submit" 
               expand="block"
+              :disabled="loading"
               class="main-submit-btn font-bold mt-1"
             >
-              Iniciar sesión
+              {{ loading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
             </ion-button>
           </form>
 
@@ -108,6 +114,7 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { 
   IonPage, 
   IonContent, 
@@ -116,18 +123,45 @@ import {
   IonInput, 
   IonButton 
 } from '@ionic/vue'
+import { registrarUsuario, loginUsuario } from '@/services/usuarioService'
+import { useAuthStore } from '@/stores/authStore'
+
+const router = useRouter()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
 const selectedLanguage = ref('es')
+const loading = ref(false)
+const errorMsg = ref('')
 
-const handleLogin = () => {
+const handleLogin = async () => {
   if (!email.value || !password.value) return
-  console.log('Iniciando sesión con:', { email: email.value, password: password.value })
+  loading.value = true
+  errorMsg.value = ''
+  try {
+    const res = await loginUsuario({ email: email.value, password: password.value })
+    // Espera que el backend devuelva { usuario, token } o similar
+    const { usuario, token } = res.data
+    authStore.login(usuario, token)
+    // Redirige según el rol
+    if (authStore.isAdmin) {
+      router.push('/dashboard')
+    } else {
+      router.push('/catalogo')
+    }
+  } catch (e) {
+    console.error('Error al iniciar sesión:', e)
+    errorMsg.value = e.response?.data?.message || 'Credenciales incorrectas. Inténtalo de nuevo.'
+  } finally {
+    loading.value = false
+  }
 }
 
 const loginWithProvider = (provider) => {
-  console.log(`Proveedor: ${provider}`)
+  // OAuth no implementado en el backend actual — placeholder
+  console.log(`Login con proveedor: ${provider}`)
+  errorMsg.value = `El login con ${provider} no está disponible aún.`
 }
 </script>
 
