@@ -1,69 +1,77 @@
 <template>
-  <div class="bg-darkbg text-white font-sans min-h-screen flex flex-col selection:bg-brandgreen selection:text-black">
-    
+  <ion-page>
     <HeaderComponent :is-admin="false" />
 
-    <main class="max-w-2xl mx-auto px-8 py-16 text-center flex-1">
+    <ion-content :fullscreen="true" class="support-content absolute-center-content">
       
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-darkcard border border-darkborder mb-6">
-        <svg class="w-8 h-8 text-brandgreen" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-        </svg>
-      </div>
-      
-      <h2 class="text-3xl font-bold mb-4">¿Necesitas ayuda?</h2>
-      <p class="text-gray-400 mb-10">
-        Envíanos tus dudas, reportes de errores o sugerencias sobre el catálogo. Nuestro equipo de administración te responderá lo antes posible.
-      </p>
-
-      <form @submit.prevent="handleSubmit" class="bg-darkcard p-8 rounded-xl border border-darkborder text-left shadow-lg">
+      <div class="login-style-viewport">
         
-        <div class="mb-6">
-          <label class="block text-sm font-medium text-gray-400 mb-2">Asunto</label>
-          <div class="relative">
-            <select 
-              v-model="selectedSubject"
-              class="w-full bg-darkbg border border-darkborder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brandgreen appearance-none cursor-pointer transition-colors"
-            >
-              <option v-for="option in subjectOptions" :key="option" :value="option">
-                {{ option }}
-              </option>
-            </select>
-            <span class="absolute right-4 top-4.5 text-xs text-gray-400 pointer-events-none">▼</span>
+        <div class="main-centered-card">
+          
+          <div class="support-header-box">
+            <div class="support-icon-circle">
+              <svg class="support-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+              </svg>
+            </div>
+            
+            <h2 class="support-title">¿Necesitas ayuda?</h2>
+            <p class="support-description">
+              Envíanos tus dudas, reportes de errores o sugerencias sobre el catálogo. Nuestro equipo de administración te responderá lo antes posible.
+            </p>
           </div>
-        </div>
 
-        <div class="mb-8">
-          <label class="block text-sm font-medium text-gray-400 mb-2">Mensaje</label>
-          <textarea 
-            v-model="message"
-            rows="5" 
-            required
-            placeholder="Describe tu consulta aquí..." 
-            class="w-full bg-darkbg border border-darkborder rounded-lg px-4 py-3 text-white focus:outline-none focus:border-brandgreen resize-none transition-colors"
-          ></textarea>
-        </div>
+          <form @submit.prevent="handleSubmit" class="support-card-form">
+            
+            <div class="form-group">
+              <label class="input-label">Asunto</label>
+              <div class="select-wrapper">
+                <select 
+                  v-model="selectedSubject"
+                  class="custom-select"
+                >
+                  <option v-for="option in subjectOptions" :key="option" :value="option">
+                    {{ option }}
+                  </option>
+                </select>
+                <span class="select-arrow">▼</span>
+              </div>
+            </div>
 
-        <button 
-          type="submit" 
-          class="w-full bg-brandgreen hover:bg-green-400 text-black font-bold py-3 px-6 rounded-lg transition-colors text-lg shadow-md cursor-pointer"
-        >
-          Enviar Mensaje
-        </button>
-      </form>
-    </main>
-  </div>
+            <div class="form-group">
+              <label class="input-label">Mensaje</label>
+              <textarea 
+                v-model="message"
+                rows="5" 
+                required
+                placeholder="Describe tu consulta aquí..." 
+                class="custom-textarea"
+              ></textarea>
+            </div>
+
+            <ion-button 
+              type="submit" 
+              expand="block"
+              class="main-submit-btn"
+            >
+              Enviar Mensaje
+            </ion-button>
+          </form>
+
+        </div>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
-import HeaderComponent from '@/components/HeaderComponent.vue'
 import { ref } from 'vue'
+import { IonPage, IonContent, IonButton } from '@ionic/vue'
+import HeaderComponent from '@/components/HeaderComponent.vue'
 
-// Reactive bindings for data capture
 const selectedSubject = ref('Problema técnico en la plataforma')
 const message = ref('')
 
-// Subject dropdown options list mapping
 const subjectOptions = [
   'Problema técnico en la plataforma',
   'Error en la información de un videojuego',
@@ -71,11 +79,9 @@ const subjectOptions = [
   'Dudas sobre la cuenta'
 ]
 
-// Form submission logic pipeline
 const handleSubmit = () => {
   if (!message.value.trim()) return
 
-  // Mock data payload ready for API integration (Axios / Fetch)
   const ticketData = {
     subject: selectedSubject.value,
     body: message.value.trim(),
@@ -83,8 +89,189 @@ const handleSubmit = () => {
   }
 
   console.log('Procesando envío de ticket de soporte:', ticketData)
-
-  // Clear inputs after successful submission handling
   message.value = ''
 }
 </script>
+
+<style scoped>
+.support-content {
+  --background: var(--bg);
+  --color: var(--text-primary);
+  font-family: sans-serif;
+}
+
+/* Modificación de las propiedades internas de ion-content */
+.absolute-center-content::part(scroll) {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/* Viewport con el comportamiento de centrado estricto de LoginView */
+.login-style-viewport {
+  display: flex;
+  align-items: center;      
+  justify-content: center;   
+  flex: 1 0 auto;
+  width: 100%;
+  min-height: calc(100vh - 70px); 
+  padding: 40px 24px;
+  box-sizing: border-box;
+}
+
+/* Tarjeta centralizada */
+.main-centered-card {
+  max-width: 540px; 
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Sección superior de presentación */
+.support-header-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.support-icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.support-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--brand-green);
+}
+
+.support-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.support-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  max-w: 460px;
+}
+
+/* Diseño de la tarjeta del formulario */
+.support-card-form {
+  background: var(--bg-card);
+  padding: 32px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+/* Estilo para los selectores nativos */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 40px 12px 16px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.custom-select:focus {
+  border-color: var(--brand-green);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+/* Áreas de texto */
+.custom-textarea {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.custom-textarea:focus {
+  border-color: var(--brand-green);
+}
+
+/* Botón de envío principal */
+.main-submit-btn {
+  --background: var(--brand-green);
+  --color: #000000;
+  --border-radius: 8px;
+  --box-shadow: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  height: 46px;
+  margin: 8px 0 0 0;
+}
+
+/* Ajustes para móviles */
+@media (max-width: 576px) {
+  .login-style-viewport {
+    padding: 24px 16px;
+    align-items: flex-start; /* Evita roturas si el teclado se despliega en pantalla */
+  }
+
+  .support-card-form {
+    padding: 20px;
+  }
+
+  .support-title {
+    font-size: 1.5rem;
+  }
+}
+</style>
