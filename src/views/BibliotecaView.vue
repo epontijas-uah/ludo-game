@@ -1,29 +1,32 @@
-<template>  
-  <!-- Cambiamos el div por ion-page e ion-content para que ocupe todo el alto -->  
-  <ion-page class="bg-darkbg selection:bg-brandgreen selection:text-black">  
-    <HeaderComponent :is-admin="false">  
-      <template #search>  
-        <input   
-          type="text"   
-          v-model="searchQuery"   
-          placeholder="Buscar en mi biblioteca..."   
-          class="search-input"  
-        >  
-      </template>  
-    </HeaderComponent>  
+<template>
+  <ion-page>
+    <HeaderComponent :is-admin="false">
+      <template #search>
+        <div class="search-wrapper">
+          <input   
+            type="text"   
+            v-model="searchQuery"   
+            placeholder="Buscar en mi biblioteca..."   
+            class="search-input"  
+          >
+        </div>
+      </template>
+    </HeaderComponent>
   
-    <ion-content class="ion-padding-horizontal bg-darkbg" :fullscreen="true">  
-      <!-- Un contenedor con min-h-screen asegura que el fondo oscuro cubra todo -->  
-      <main class="max-w-7xl mx-auto py-12 min-h-screen">  
-        <h2 class="text-3xl font-bold mb-2 text-white">Mi Biblioteca</h2>  
-        <p class="text-gray-400 mb-8">{{ games.length }} juegos en tu colección</p>  
+    <ion-content class="library-content" :fullscreen="true">
+      <div class="library-container">
+        
+        <header class="library-header-section">
+          <h2 class="library-main-title">Mi Biblioteca</h2>  
+          <p class="library-subtitle">{{ games.length }} juegos en tu colección</p>  
+        </header>
   
-        <div class="bg-darkcard border border-darkborder rounded-xl p-4 flex justify-between items-center mb-8">  
-          <div class="flex gap-4 items-center">  
-            <div class="relative">  
+        <div class="filter-bar">  
+          <div class="filter-controls">  
+            <div class="select-wrapper">  
               <select   
                 v-model="selectedFilter"  
-                class="bg-darkbg border border-darkborder rounded-lg pl-4 pr-10 py-2.5 text-sm text-white focus:outline-none focus:border-brandgreen appearance-none cursor-pointer"  
+                class="custom-select"   
               >  
                 <option value="Todos">Todos</option>  
                 <option value="En curso">En curso</option>  
@@ -31,79 +34,94 @@
                 <option value="Pendiente">Pendiente</option>  
                 <option value="Jugado regularmente">Jugado regularmente</option>  
               </select>  
-              <span class="absolute right-3 top-3 text-xs text-gray-400 pointer-events-none">▼</span>  
+              <span class="select-arrow">▼</span>  
             </div>  
-            <span class="text-sm text-gray-400 hidden md:block">  
+            <span class="filter-counter-text hidden-sm-down">  
               Mostrando {{ filteredGames.length }} de {{ games.length }}  
             </span>  
           </div>  
         </div>  
   
-        <!-- Estado de carga -->  
-        <div v-if="loading" class="flex flex-col justify-center items-center py-20">  
-          <svg class="animate-spin w-10 h-10 text-brandgreen" fill="none" viewBox="0 0 24 24">  
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>  
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>  
-          </svg>  
-          <span class="mt-4 text-gray-400">Consultando tu biblioteca...</span>  
+        <div v-if="loading" class="spinner-container">  
+          <ion-spinner name="crescent" class="custom-spinner"></ion-spinner>
+          <span class="spinner-text">Consultando tu biblioteca...</span>  
         </div>  
   
-        <!-- Error o Inicio de sesión requerido -->  
-        <div v-else-if="error" class="bg-darkcard border border-darkborder shadow-xl rounded-2xl p-12 text-center max-w-lg mx-auto">  
-          <div class="bg-red-500/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">  
-            <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">  
+        <div v-else-if="error" class="error-panel">  
+          <div class="error-icon-box">  
+            <svg class="error-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">  
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>  
             </svg>  
           </div>  
-          <h3 class="text-xl font-bold text-white mb-2">{{ authStore.usuarioId ? 'Error de conexión' : 'Acceso Restringido' }}</h3>  
-          <p class="text-gray-400 mb-6">{{ error }}</p>  
-          <button   
+          <h3 class="error-title">
+            {{ authStore.usuarioId ? 'Error de conexión' : 'Acceso Restringido' }}
+          </h3>  
+          <p class="error-desc">{{ error }}</p>  
+          
+          <ion-button   
             v-if="!authStore.usuarioId"  
             @click="$router.push('/login')"   
-            class="w-full py-3 bg-brandgreen text-black font-bold rounded-xl hover:bg-opacity-90 transition-all cursor-pointer"  
+            expand="block"
+            class="action-btn"  
           >  
             Ir al Login  
-          </button>  
-          <button   
+          </ion-button>  
+          <ion-button   
             v-else  
             @click="cargarBiblioteca"   
-            class="px-8 py-3 border border-darkborder text-white rounded-xl hover:bg-darkborder transition-all cursor-pointer"  
+            fill="outline"
+            class="retry-btn"  
           >  
             Reintentar  
-          </button>  
+          </ion-button>  
         </div>  
   
         <template v-else>  
-          <div v-if="filteredGames.length > 0" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">  
-            <GameStatusCardComponent   
-              v-for="game in filteredGames"   
-              :key="game.id"  
-              :game="game"  
-              @toggle-favorite="toggleFavorite"  
-              @update-status="updateGameStatus"  
-            />  
-          </div>  
+          <ion-grid class="ion-no-padding" v-if="filteredGames.length > 0">
+            <ion-row class="library-grid-row">
+              <ion-col
+                size="12"
+                size-sm="6"
+                size-md="4"
+                size-lg="3"
+                v-for="game in filteredGames"   
+                :key="game.id"
+                class="game-card-col"
+              >
+                <GameStatusCardComponent   
+                  :game="game"   
+                  @toggle-favorite="toggleFavorite"   
+                  @update-status="updateGameStatus"   
+                />  
+              </ion-col>
+            </ion-row>
+          </ion-grid>  
   
-          <!-- Vista cuando no hay juegos (Vacía) -->  
-          <div v-else class="text-center py-20">  
-            <div class="text-6xl mb-4">🎮</div>  
-            <h3 class="text-xl font-bold text-white mb-2">Tu biblioteca está vacía</h3>  
-            <p class="text-gray-400 mb-8">Parece que aún no has añadido ningún juego a tu colección.</p>  
-            <button   
+          <div v-else class="empty-state">  
+            <div class="empty-icon-box">
+              <svg class="empty-svg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+              </svg>
+            </div>  
+            <h3 class="empty-title">Tu biblioteca está vacía</h3>  
+            <p class="empty-desc">Parece que aún no has añadido ningún juego a tu colección.</p>  
+            <ion-button   
               @click="$router.push('/catalogo')"  
-              class="px-6 py-3 bg-brandgreen text-black font-bold rounded-xl hover:scale-105 transition-transform"  
+              class="action-btn explore-btn"  
             >  
               Explorar Catálogo  
-            </button>  
+            </ion-button>  
           </div>  
         </template>  
-      </main>  
-    </ion-content>  
-  </ion-page>  
+
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import { IonPage, IonContent, IonGrid, IonRow, IonCol, IonSpinner, IonButton } from '@ionic/vue'
 import HeaderComponent from '@/components/HeaderComponent.vue'
 import GameStatusCardComponent from '@/components/GameStatusCardComponent.vue'
 import { getBibliotecaUsuario, actualizarEstadoJuego } from '@/services/bibliotecaService'
@@ -111,18 +129,13 @@ import { useAuthStore } from '@/stores/authStore'
 
 const authStore = useAuthStore()
 
-// Estados de UI
 const loading = ref(false)
 const error = ref(null)
 
-// Filtros
 const searchQuery = ref('')
 const selectedFilter = ref('Todos')
-
-// Juegos de la biblioteca del usuario
 const games = ref([])
 
-// Mapea una entrada de biblioteca del backend al formato de la vista
 const mapearEntrada = (entrada) => ({
   id: entrada.id,
   juegoId: entrada.juego?.id ?? entrada.juegoId,
@@ -132,7 +145,6 @@ const mapearEntrada = (entrada) => ({
   image: entrada.juego?.imagenUrl || entrada.juego?.imagen || null
 })
 
-// Carga la biblioteca del usuario autenticado
 const cargarBiblioteca = async () => {
   if (!authStore.usuarioId) {
     error.value = 'Debes iniciar sesión para ver tu biblioteca.'
@@ -151,27 +163,24 @@ const cargarBiblioteca = async () => {
   }
 }
 
-// Alterna favorito localmente (sin endpoint dedicado por ahora)
 const toggleFavorite = (id) => {
   const game = games.value.find(g => g.id === id)
   if (game) game.isFavorite = !game.isFavorite
 }
 
-// Actualiza el estado del juego en el backend y luego en local
 const updateGameStatus = async (id, newStatus) => {
   const game = games.value.find(g => g.id === id)
   if (!game) return
   const prevStatus = game.status
-  game.status = newStatus // optimistic update
+  game.status = newStatus 
   try {
     await actualizarEstadoJuego(authStore.usuarioId, game.juegoId, newStatus)
   } catch (e) {
     console.error('Error al actualizar estado:', e)
-    game.status = prevStatus // revertir si falla
+    game.status = prevStatus 
   }
 }
 
-// Pipeline de filtrado reactivo
 const filteredGames = computed(() => {
   return games.value.filter(game => {
     const matchesSearch = game.title.toLowerCase().includes(searchQuery.value.toLowerCase())
@@ -184,8 +193,266 @@ onMounted(cargarBiblioteca)
 </script>
 
 <style scoped>  
-/* Nos aseguramos de que el fondo de ion-content sea el oscuro */  
-ion-content {  
-  --background: #111111; /* Tu color darkbg */  
+.library-content {  
+  --background: var(--bg);
+  --color: var(--text-primary);
+  font-family: sans-serif;
 }  
+
+/* Contenedor estructural centralizado */
+.library-container {
+  max-w: 1300px;
+  width: 80%;
+  margin: 0 auto;
+  padding: 48px 24px;
+  box-sizing: border-box;
+}
+
+.library-header-section {
+  margin-bottom: 8px;
+}
+
+.library-main-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+  color: var(--text-primary);
+}
+
+.library-subtitle {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  margin: 0 0 32px 0;
+}
+
+/* Barra de Filtros superior */
+.filter-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.custom-select {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 40px 10px 16px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  min-width: 180px;
+  transition: border-color 0.2s ease;
+}
+
+.custom-select:focus {
+  border-color: var(--brand-green);
+}
+
+.select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  pointer-events: none;
+}
+
+.filter-counter-text {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Rejilla estructural */
+.library-grid-row {
+  margin: -12px;
+}
+
+.game-card-col {
+  padding: 12px;
+}
+
+/* Spinners y cargas */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  gap: 16px;
+}
+
+.custom-spinner {
+  --color: var(--brand-green);
+  width: 40px;
+  height: 40px;
+}
+
+.spinner-text {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Panel de Error y bloqueos */
+.error-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  max-w: 480px;
+  margin: 40px auto 0 auto;
+}
+
+.error-icon-box {
+  background: rgba(239, 68, 68, 0.1);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px auto;
+}
+
+.error-svg {
+  width: 32px;
+  height: 32px;
+  color: #ef4444;
+}
+
+.error-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.error-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+/* Estado Vacío */
+.empty-state {
+  text-align: center;
+  padding: 80px 0;
+  max-w: 420px;
+  margin: 0 auto;
+}
+
+.empty-icon-box {
+  margin-bottom: 20px;
+  color: var(--text-muted);
+}
+
+.empty-svg {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto;
+}
+
+.empty-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 8px 0;
+}
+
+.empty-desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0 0 32px 0;
+  line-height: 1.5;
+}
+
+/* Botones Comunes de Acción */
+.action-btn {
+  --background: var(--brand-green);
+  --color: #000000;
+  --border-radius: 10px;
+  --box-shadow: none;
+  font-weight: 700;
+  font-size: 0.85rem;
+  height: 44px;
+  margin: 0;
+}
+
+.explore-btn {
+  transition: transform 0.2s ease;
+}
+
+.explore-btn:hover {
+  transform: scale(1.03);
+}
+
+.retry-btn {
+  --color: var(--text-primary);
+  --border-color: var(--border);
+  --border-radius: 10px;
+  font-size: 0.85rem;
+  height: 44px;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+/* Buscador Header */
+.search-input {
+  background: #22252a;
+  border: 1px solid #2e3238;
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.85rem;
+  outline: none;
+  width: 240px;
+}
+
+/* Media Queries Responsivas */
+@media (max-width: 768px) {
+  .hidden-sm-down {
+    display: none !important;
+  }
+
+  .library-container {
+    padding: 24px 16px;
+  }
+
+  .filter-bar {
+    padding: 12px;
+  }
+
+  .custom-select {
+    min-width: 100%;
+    width: 100%;
+  }
+
+  .filter-controls {
+    width: 100%;
+  }
+
+  .select-wrapper {
+    width: 100%;
+  }
+}
 </style>
