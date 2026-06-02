@@ -1,10 +1,103 @@
 @import "tailwindcss";
 
 @theme {
-  --color-darkbg: #2d2d2d;       /* Gris carbón medio del fondo global */
-  --color-darkcard: #222222;     /* Gris oscuro casi negro de la tarjeta */
-  --color-darkborder: #333333;   /* Borde sutil para la tarjeta e inputs */
-  --color-brandgreen: #00E676;   /* Verde vibrante para botones y altas */
-  --color-goldaccent: #E5A93C;   /* Dorado/ámbar cálido para la recuperación */
+  --color-darkbg: #2d2d2d;
+  --color-darkcard: #222222;
+  --color-darkborder: #333333;
+  --color-brandgreen: #00E676;
+  --color-goldaccent: #E5A93C;
   --color-coral: #FF6F61;
+}
+
+/* ─── Modo oscuro (por defecto) ─────────────────────────────────────────── */
+:root {
+  --bg:           #2d2d2d;
+  --bg-card:      #222222;
+  --bg-header:    #2f2f2f;
+  --border:       #333333;
+  --border-header:#262626;
+
+  --text-primary:   #f3f3f3;
+  --text-secondary: #cfcfcf;
+  --text-muted:     #9ca3af; /* gray-400 */
+
+  --brand-green:  #00E676;
+  --gold-accent:  #E5A93C;
+  --coral:        #FF6F61;
+
+  --input-bg:     #1a1a1a;
+  --input-border: #444444;
+  --input-text:   #e6e6e6;
+  --input-placeholder: #6b7280;
+
+  --shadow:       rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Modo claro ─────────────────────────────────────────────────────────── */
+.light-mode {
+  --bg:           #f5f5f5;
+  --bg-card:      #ffffff;
+  --bg-header:    #f0f0f0;
+  --border:       #d4d4d4;
+  --border-header:#d0d0d0;
+
+  --text-primary:   #1a1a1a;
+  --text-secondary: #444444;
+  --text-muted:     #6b7280;
+
+  --brand-green:  #00c45e;   /* verde ligeramente más oscuro para contraste en fondo claro */
+  --gold-accent:  #c47f1a;   /* dorado más oscuro para legibilidad */
+  --coral:        #e05a4e;
+
+  --input-bg:     #ffffff;
+  --input-border: #c0c0c0;
+  --input-text:   #1a1a1a;
+  --input-placeholder: #9ca3af;
+
+  --shadow:       rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Estilos base globales ──────────────────────────────────────────────── */
+body {
+  background-color: var(--bg);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Inputs globales */
+input, textarea, select {
+  background-color: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--input-text);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--input-placeholder);
+}
+
+/* Search input del header */
+.search-input {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--input-text);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.search-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.search-input:focus {
+  border-color: var(--brand-green);
+}
+
+/* Selección de texto */
+::selection {
+  background-color: var(--brand-green);
+  color: #000000;
 }
